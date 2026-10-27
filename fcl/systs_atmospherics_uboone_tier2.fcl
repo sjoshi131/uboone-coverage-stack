@@ -1464,6 +1464,7 @@ generated_systematic_provider_configuration: {
         CCQETemplateReweight_SBN_v3_LFGToSF,
         QEInterference_SBN_v3,
         ZExpPCAWeighter_SBN_v3_MvA,
+        MECq0q3InterpWeighting_SBN_v3_SuSAToMar,
         CCQEXSecCorr_SBN_v3,
         PionAbsWeighter_SBN_v3
     ]
