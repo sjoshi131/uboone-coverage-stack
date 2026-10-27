@@ -1,0 +1,128 @@
+# uboone-coverage-stack
+
+From-scratch, version-pinned build of everything needed for the MicroBooNE
+VisAngle coverage study with the **Tier-2 MEC dials**, packaged as one
+relocatable folder / tarball for grid jobs.
+
+| Component | Source | Pinned commit |
+| --- | --- | --- |
+| GENIE Generator (Martini MEC + tensors) | pgranger23/Generator `dune_atmospherics_fix_inf` | `5bcbee40b` |
+| GENIE Reweight (Tier-2 dials, NaN/inf guards) | pgranger23/Reweight `dune_atmospherics_fix_inf` | `328501d3` |
+| nusystematics (Tier-2 wiring + builtin CMake fix) | sjoshi131/nusystematics `dune_atmospherics_nuisance_tier2` | `58bf0b1` |
+| NUISANCE (VisAngle sample + nominal output) | sjoshi131/nuisance-MicroBooNE-VisAngle `feature/microboone-visangle` | `4842d03` |
+| Base products (ROOT, LHAPDF6, Pythia6, log4cpp, boost) | ups on /cvmfs: genie `v3_06_02e e26:prof`, genie_xsec `v3_06_00 AR2320i00000` | — |
+
+Everything is set in `config.sh` and `ups_versions.sh`. Change those files, never the scripts,
+and bump `STACK_VERSION` for any change. `STACK_VERSION` is only a label recorded in the stack; it is not a directory.
+
+## Layout of the built stack
+
+```
+$STACK = /exp/dune/app/users/$USER/coverage-stack
+├── setup.sh  ups_versions.sh  prepare_card.sh  STACK_VERSION  MANIFEST
+├── local_install/                  custom GENIE (same layout as Pierre's)
+│   ├── lib/ include/ bin/          installed Generator + Reweight
+│   ├── GENIE-Generator/            config/, data/ (Martini tensors)  -> $GENIE
+│   └── GENIE-Reweight/             config/                           -> $GENIE_REWEIGHT
+├── nuisance/                       NUISANCE install (bin/nuissyst, lib/ incl. nusystematics)
+├── fcl/systs_atmospherics_uboone_tier2.fcl
+├── cards/coverage_all_dials_tier2.xml, smoke_test_tier2.xml
+├── sbndata/systematics/AR23Plus/   tables read by CCQETemplate, CCQEXSecCorr, QEInterference
+└── grid/run_throws.sh
+```
+
+## 0. One-time prerequisites
+
+- **GitHub access from the gpvm.** Set up an SSH key, or use HTTPS for these public repos.
+- **This repository on the gpvm.**
+
+  ```
+  git clone git@github.com:sjoshi131/uboone-coverage-stack.git ~/uboone-coverage-stack
+  ```
+
+- **Disk space.** You need roughly 10 GB in `/exp/dune/app/users/$USER` for the stack and build area.
+- **Read access to Pierre's `sbndata`.** The path is `SBNDATA_SRC` in `config.sh`. It's only read once, during the build.
+
+## 1. Build (about 1–2 h, mostly GENIE)
+
+The build must run in the SL7 container. Running it detached keeps it going if your ssh session drops:
+
+```
+cd ~/uboone-coverage-stack
+APPT=/cvmfs/oasis.opensciencegrid.org/mis/apptainer/current/bin/apptainer
+IMG=/cvmfs/singularity.opensciencegrid.org/fermilab/fnal-dev-sl7:latest
+nohup $APPT exec -B /cvmfs,/exp,/nashome --ipc --pid $IMG ./build.sh all > build_all.out 2>&1 &
+tail -f build_all.out
+```
+
+Or interactively, one stage at a time:
+
+```
+$APPT shell -B /cvmfs,/exp,/nashome --ipc --pid $IMG
+./build.sh check          # SL7, /cvmfs, ups, GitHub, sbndata
+./build.sh prepare        # stack skeleton + setup.sh, fcl, cards
+./build.sh genie          # custom GENIE Generator -> local_install
+./build.sh reweight       # custom GENIE Reweight  -> local_install (checks Tier-2 enums + guards)
+./build.sh nuisance       # NUISANCE + builtin nusystematics -> $STACK/nuisance
+./build.sh runtime        # sbndata copy + MANIFEST
+./build.sh verify /path/to/ghep_AR23.root   # clean-env checks + 2000-event smoke test
+```
+
+Logs go to `$WORK/logs/<stage>.log`. Stages can be re-run safely, so after fixing a failure you rerun only that stage.
+
+The `genie` stage copies the feature flags from Pierre's GENIE `Make.config` when it's readable. It then refuses to continue if the resulting configuration differs, which keeps the build identical to the one he validated.
+
+## 2. Use it interactively
+
+```
+$APPT shell -B /cvmfs,/exp,/nashome --ipc --pid $IMG
+source /exp/dune/app/users/$USER/coverage-stack/setup.sh
+$STACK/prepare_card.sh $COVERAGE_CARDS/coverage_all_dials_tier2.xml /path/to/ghep_AR23.root card.xml
+nuissyst -c card.xml -o coverage.root
+```
+
+## 3. Package and test the tarball
+
+Inside the container:
+
+```
+./package.sh                                                   # -> /exp/dune/app/users/$USER/coverage-stack.tar.gz
+./test_tarball.sh /exp/dune/app/users/$USER/coverage-stack.tar.gz /path/to/ghep_AR23.root
+```
+
+`test_tarball.sh` unpacks the tarball in a different folder and runs it in a clean environment. It fails if anything still resolves to the original stack or build area. Only submit after it prints `TARBALL OK`.
+
+## 4. Grid campaign
+
+On the gpvm host, not in the container, with a valid token:
+
+```
+htgettoken -a htvaultprod.fnal.gov -i dune
+grid/submit_throws.sh /exp/dune/app/users/$USER/coverage-stack.tar.gz \
+    coverage_all_dials_tier2.xml /pnfs/dune/scratch/users/$USER/inputs/ghep_AR23.root 20 20 alldials
+```
+
+Job `k` writes a non-overlapping block of throws, and only job 0 writes `nominal`. Twenty jobs of 20 throws each give throws 1–400 exactly once. To use a card that isn't in the tarball, pass its path; it's shipped with the job.
+
+When the jobs finish, merge the outputs inside the container after sourcing `setup.sh`:
+
+```
+grid/merge_throws.sh /pnfs/dune/scratch/users/$USER/coverage/alldials_<date> \
+    coverage_all_dials_tier2.xml /path/to/ghep_AR23.root
+```
+
+The merged file contains `error_bands/`, `nominal_throw/`, `nominal/` and `nominal_band/`.
+
+## Notes
+
+- **FHiCL.** `fcl/systs_atmospherics_uboone_tier2.fcl` is the agreed study configuration. It is derived from Pierre's `systs_atmospherics_v2.fcl` and has one provider for each repeated dial name:
+  - `CCQETemplateReweight_SBN_v3_LFGToSF` for `q0bin0..4`
+  - `ZExpPCAWeighter_SBN_v3_MvA` (MINERvA) for `b1..b4`
+  - no `MECq0q3InterpWeighting` providers
+
+  `MaCCRES`, `XSecShape_CCMEC`, `XSecShape_CCMEC_Empirical` and `Fakedial` were removed after discussion with colleagues.
+- **Card.** `cards/coverage_all_dials_tier2.xml` has 66 dials: 61 thrown (`GAUSSIAN`) and 5 Tier-2 dials held `FIX` at nominal. FHiCL dials that aren't in the card are still calculated, but they give a weight of 1. The exceptions are the three correction dials, which are always applied. Those calculated-but-unused dials are `ZExpA1..4CCQE`, the four `MiscInteractionSysts` dials, and the corrections.
+- **Tier-2 alternative-model runs.** Set `XSecShape_CCMEC_Martini` or `EnergyDependence_CCMEC` to `nominal="1.0"`, one at a time. For the decay-angle universes, set `DecayAngMECVariationResponse` to an integer from 1 to 24.
+- **The `-t` flag of `nuissyst` is ignored.** The number of throws comes from `<config error_throws=...>`, or from `-q error_throws=N` as the grid script uses.
+- **Correction dials** `CCQEXSecCorr`, `Theta_Delta2Npi` and `VecFFCCQEshape` are always applied, whatever the card contains.
+- **Debug output.** Pierre's Reweight branch (`b0a6118`) prints `[DEBUG CalcWeightZExp] ...` to stdout whenever the raw `ZExpA1..4CCQE` responses are calculated. nusystematics calculates every FHiCL dial, even ones that aren't in the card, so expect large logs. The grid script compresses them. Filter with `grep -v "DEBUG CalcWeightZExp"` when reading.

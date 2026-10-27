@@ -1,0 +1,105 @@
+diff --git a/src/Routines/SystematicRoutines.cxx b/src/Routines/SystematicRoutines.cxx
+index 0afbbdf..a2247d7 100755
+--- a/src/Routines/SystematicRoutines.cxx
++++ b/src/Routines/SystematicRoutines.cxx
+@@ -986,6 +986,14 @@ void SystematicRoutines::MergeThrows() {
+       (TDirectory *)fOutputRootFile->mkdir("nominal_throw");
+   outnominal->cd();
+ 
++  // Nominal (central-value) predictions, evaluated at the card's nominal
++  // parameter values, rather than the mean of the throws.
++  //   nominal/       : nominal MC, statistical errors only
++  //   nominal_band/  : nominal MC, errors = stat (+) throw spread about nominal
++  TDirectory *outcv = (TDirectory *)fOutputRootFile->mkdir("nominal");
++  TDirectory *outcvband =
++      (TDirectory *)fOutputRootFile->mkdir("nominal_band");
++
+   // Split Input Files
+   if (!fThrowString.empty())
+     fThrowList = GeneralUtils::ParseToStr(fThrowString, ",");
+@@ -996,7 +1004,7 @@ void SystematicRoutines::MergeThrows() {
+ 
+   /// Save location of file containing nominal
+   std::string nominalfile;
+-  bool nominalfound;
++  bool nominalfound = false;
+ 
+   // Loop over files and check they exist.
+   for (uint i = 0; i < fThrowList.size(); i++) {
+@@ -1106,6 +1114,15 @@ void SystematicRoutines::MergeThrows() {
+     // bincontents = new double[nbins];
+     std::vector<double> bincontents = std::vector<double>(nbins, 0);
+ 
++    // Keep an untouched copy of the nominal prediction before baseplot is
++    // overwritten with the throw mean below.
++    TH1 *nomplot = (TH1 *)baseplot->Clone((plotname + "_nominal_tmp").c_str());
++    nomplot->SetDirectory(0);
++
++    // Per-bin sum of squared deviations of the throws from the nominal
++    std::vector<double> sumsq_nom = std::vector<double>(nbins, 0);
++    int nthrows_used = 0;
++
+     // double *binlowest;
+     // binlowest = new double[nbins];
+ 
+@@ -1122,6 +1139,12 @@ void SystematicRoutines::MergeThrows() {
+       bintree->Branch(Form("content_%i", i), &bincontents[i],
+                       Form("content_%i/D", i));
+     }
++    // Nominal bin contents in the same flattened bin ordering as the
++    // content_<i> branches, so later studies can compare each throw entry to
++    // the nominal directly (written as error_bands/<plot>_nominal_vec).
++    TVectorD nomvec(nbins);
++    for (int i = 0; i < nbins; i++)
++      nomvec[i] = nomplot->GetBinContent(i + 1);
+ 
+     // Make new throw plot
+     TH1 *newplot;
+@@ -1153,7 +1176,10 @@ void SystematicRoutines::MergeThrows() {
+         for (Int_t j = 0; j < nbins; j++) {
+           tprof->Fill(j + 0.5, newplot->GetBinContent(j + 1));
+           bincontents[j] = newplot->GetBinContent(j + 1);
++          double dev = newplot->GetBinContent(j + 1) - nomvec[j];
++          sumsq_nom[j] += dev * dev;
+         }
++        nthrows_used++;
+ 
+         errorDIR->cd();
+ 	bintree->Fill();
+@@ -1195,6 +1221,36 @@ void SystematicRoutines::MergeThrows() {
+     }
+     baseplot->Write();
+ 
++    // --- Nominal central-value outputs ---------------------------------
++    // nominal/<plot> : nominal MC with its statistical errors
++    outcv->cd();
++    nomplot->SetName(plotname.c_str());
++    nomplot->SetTitle("Nominal prediction");
++    nomplot->Write();
++
++    // nominal_band/<plot> : nominal MC, error = stat (+) RMS of throws about
++    // the nominal, sqrt( sum_k (x_k - x_nom)^2 / N ). Unlike the
++    // TProfile spread this is measured relative to the nominal, so it also
++    // picks up any shift of the throw mean away from the nominal.
++    outcvband->cd();
++    TH1 *nomband = (TH1 *)nomplot->Clone(plotname.c_str());
++    nomband->SetDirectory(0);
++    nomband->SetTitle("Nominal prediction, stat+syst (throws about nominal)");
++    for (int j = 0; j < nbins; j++) {
++      double systerr =
++          (nthrows_used > 0) ? sqrt(sumsq_nom[j] / nthrows_used) : 0.0;
++      nomband->SetBinError(
++          j + 1, sqrt(pow(nomplot->GetBinError(j + 1), 2) + pow(systerr, 2)));
++    }
++    nomband->Write();
++
++    // Also keep the nominal next to the throw trees in error_bands/
++    errorDIR->cd();
++    nomplot->Write((plotname + "_nominal").c_str());
++    nomvec.Write((plotname + "_nominal_vec").c_str());
++
++    delete nomband;
++    delete nomplot;
+     delete statplot;
+     delete baseplot;
+     delete tprof;

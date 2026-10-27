@@ -1,0 +1,4 @@
+build_all.out
+*.out
+*.log
+*.root
