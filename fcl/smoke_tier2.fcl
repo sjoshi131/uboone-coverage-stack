@@ -1,7 +1,10 @@
 # smoke_tier2.fcl -- FAST configuration for smoke tests ONLY.
 # Derived from systs_atmospherics_uboone_tier2.fcl, keeping just the providers and
 # dials of cards/smoke_test_tier2.xml: q0bin0..4, b1..b4, MECResponse_q0bin0..3 and
-# the 3 decay-angle dials. nusystematics evaluates EVERY dial in the FHiCL for every
+# the 3 decay-angle dials, plus ZExpA1..4CCQE (not in the card): with
+# AxFFCCQEDipoleToZExp: true, nusystematics refuses to start unless the raw Z-expansion
+# dials are present to carry the dipole->ZExp axial reweight.
+# nusystematics evaluates EVERY dial in the FHiCL for every
 # event, so trimming the FHiCL (not the card) is what makes a run fast. No correction
 # dials: the nominal here is NOT the physics nominal. Never use for the study.
 generated_systematic_provider_configuration: {
@@ -861,6 +864,10 @@ generated_systematic_provider_configuration: {
 
       instance_name: "ICARUS_v2_multisigma"
       parameter_headers: [
+         "ZExpA1CCQE",
+         "ZExpA2CCQE",
+         "ZExpA3CCQE",
+         "ZExpA4CCQE",
          "DecayAngMECVariationResponse",
          "DecayAngMEC",
          "DecayAng2MEC"
