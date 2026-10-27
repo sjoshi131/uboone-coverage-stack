@@ -29,8 +29,9 @@ env -i HOME="${HOME}" USER="${USER}" PATH=/usr/bin:/bin TERM="${TERM}" \
   echo "[test] library resolution OK (custom libs from tarball, the rest from /cvmfs)"
   if [ -n "${INPUT}" ]; then
     "${STACK}/prepare_card.sh" "${COVERAGE_CARDS}/smoke_test_tier2.xml" "${INPUT}" smoke.xml
-    set +e; nuissyst -c smoke.xml -o smoke.root -n 2000 > smoke.log 2>&1; rc=$?; set -e
-    tail -15 smoke.log
+    echo "[test] running nuissyst (several minutes, no output until done); log: $(pwd)/smoke.log"
+    set +e; nuissyst -c smoke.xml -o smoke.root -n 200 > smoke.log 2>&1; rc=$?; set -e
+    grep -v "DEBUG CalcWeightZExp" smoke.log | tail -15
     "${STACK}/check_output.sh" "${rc}" smoke.log smoke.root || fail "smoke run failed (log: $(pwd)/smoke.log)"
     echo "[test] smoke run OK: $(pwd)/smoke.root"
   fi

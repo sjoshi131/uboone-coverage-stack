@@ -1,3 +1,8 @@
+# systs_atmospherics_uboone_tier2.fcl -- PRODUCTION FHiCL for the coverage study.
+# XSecShape_CCMEC_Martini and EnergyDependence_CCMEC are deliberately absent: without
+# precomputed GENIE splines they trigger a numerical cross-section integral for every
+# MEC event at every variation (GReWeightXSecMEC::GetXSecIntegral). They are kept in
+# systs_atmospherics_uboone_tier2_full.fcl for small alternative-model runs only.
 generated_systematic_provider_configuration: {
     CCQETemplateReweight_SBN_v3_LFGToSF: {
       instance_name: "SBN_v3_LFGToSF"

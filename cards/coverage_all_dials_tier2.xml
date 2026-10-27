@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <nuisance>
   <!--
-    Validated-prior card for the MicroBooNE VisAngle study: 66 dials (61 GAUSSIAN, 5 FIX).
+    Validated-prior card for the MicroBooNE VisAngle study: 68 dials (65 GAUSSIAN, 3 FIX).
     Fill @INPUT_GHEP@ with prepare_card.sh (done automatically by the grid scripts).
   -->
   <DUNERwt ConfigFHiCL="systs_atmospherics_uboone_tier2.fcl" />
@@ -61,6 +61,12 @@
   <parameter name="FracDelta_CCMEC"       type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
   <parameter name="FracPN_CCMEC"          type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
 
+  <!-- MECq0q3InterpWeighting_SBN_v3_SuSAToMar (SuSAv2 -> Martini q0-q3 morph). -->
+  <parameter name="MECResponse_q0bin0"     type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
+  <parameter name="MECResponse_q0bin1"     type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
+  <parameter name="MECResponse_q0bin2"     type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
+  <parameter name="MECResponse_q0bin3"     type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
+
   <parameter name="QuasiDeuteronFraction" type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
 
   <parameter name="QEIntf_dial_0"          type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
@@ -96,8 +102,6 @@
     XSecShape_CCMEC_{Martini,Empirical} and EnergyDependence_CCMEC are [0,1]
     morphs: 0 = nominal (AR23 SuSAv2 MEC), 1 = full alternative model.
   -->
-  <parameter name="XSecShape_CCMEC_Martini"   type="nusyst_parameter" nominal="0.0" low="0.0" high="1.0" step="1.0" state="FIX" />
-  <parameter name="EnergyDependence_CCMEC"    type="nusyst_parameter" nominal="0.0" low="0.0" high="1.0" step="1.0" state="FIX" />
 
   <!--
     MEC nucleon-cluster decay angle. The weight is delivered only through

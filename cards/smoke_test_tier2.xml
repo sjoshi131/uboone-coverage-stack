@@ -1,47 +1,30 @@
 <?xml version="1.0"?>
 <nuisance>
   <!--
-    Validated-prior card for the MicroBooNE VisAngle study: 66 dials (61 GAUSSIAN, 5 FIX).
-    Fill @INPUT_GHEP@ with prepare_card.sh (done automatically by the grid scripts).
+    SMOKE TEST ONLY: 16 dials (13 GAUSSIAN + 3 FIX) on the trimmed smoke_tier2.fcl.
+    Checks that the stack runs end to end, incl. the CCQE template, MINERvA ZExp,
+    MEC q0-q3 and decay-angle providers. Not a physics configuration.
   -->
-  <DUNERwt ConfigFHiCL="systs_atmospherics_uboone_tier2.fcl" />
+  <DUNERwt ConfigFHiCL="smoke_tier2.fcl" />
 
   <sample name="MicroBooNE_CC1Mu1p_VisAngle_XSec_1DThetaVis_nu"
           input="GENIE:@INPUT_GHEP@" />
 
   <config error_throws="3" />
 
-  <!-- Normalized nuisance coordinates: step=1 corresponds to one sigma. -->
-
-  <!-- Select exactly one CCQETemplateReweight provider in the FHiCL. -->
   <parameter name="q0bin0"                type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
   <parameter name="q0bin1"                type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
   <parameter name="q0bin2"                type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
   <parameter name="q0bin3"                type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
   <parameter name="q0bin4"                type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
-
-  <!-- Minerva Z-expansion PCA coordinates: independent, unit variance. -->
   <parameter name="b1"                     type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
   <parameter name="b2"                     type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
   <parameter name="b3"                     type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
   <parameter name="b4"                     type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
-
-    <!--
-    Tier-2 MEC dials (custom GReWeight build only).
-    XSecShape_CCMEC_{Martini,Empirical} and EnergyDependence_CCMEC are [0,1]
-    morphs: 0 = nominal (AR23 SuSAv2 MEC), 1 = full alternative model.
-  -->
-  <parameter name="XSecShape_CCMEC_Martini"   type="nusyst_parameter" nominal="0.0" low="0.0" high="1.0" step="1.0" state="FIX" />
-  <parameter name="EnergyDependence_CCMEC"    type="nusyst_parameter" nominal="0.0" low="0.0" high="1.0" step="1.0" state="FIX" />
-
-  <!--
-    MEC nucleon-cluster decay angle. The weight is delivered only through
-    DecayAngMECVariationResponse, whose value is a UNIVERSE INDEX (0..24) on the
-    (DecayAngMEC amplitude x DecayAng2MEC frequency) grid in the FHiCL.
-    Index 0 = (amplitude 0, frequency 1) = nominal.
-    DecayAngMEC / DecayAng2MEC are responseless: in NUISANCE they produce no
-    weight on their own and are listed here only for bookkeeping.
-  -->
+  <parameter name="MECResponse_q0bin0"     type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
+  <parameter name="MECResponse_q0bin1"     type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
+  <parameter name="MECResponse_q0bin2"     type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
+  <parameter name="MECResponse_q0bin3"     type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
   <parameter name="DecayAngMECVariationResponse" type="nusyst_parameter" nominal="0.0" low="0.0"  high="24.0" step="1.0" state="FIX" />
   <parameter name="DecayAngMEC"                  type="nusyst_parameter" nominal="0.0" low="-1.0" high="1.0"  step="0.5" state="FIX" />
   <parameter name="DecayAng2MEC"                 type="nusyst_parameter" nominal="1.0" low="0.5"  high="2.0"  step="0.5" state="FIX" />

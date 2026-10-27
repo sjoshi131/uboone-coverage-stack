@@ -13,6 +13,9 @@ WORK="/exp/dune/app/users/${USER}/coverage-build"
 # Parallel make jobs (gpvm: keep modest)
 NJOBS=4
 
+# Events used by './build.sh verify <input>' (with the trimmed fcl/smoke_tier2.fcl)
+SMOKE_EVENTS=200
+
 # ---------------------------------------------------------------------------
 # Sources, pinned to exact commits (branch is only used to fetch).
 # Generator/Reweight: switch the URLs to your own forks once you make them.
@@ -42,6 +45,7 @@ SBNDATA_FILES=(
   "systematics/AR23Plus/CCQETemplateReweight.root"   # CCQETemplateReweight_SBN_v3_LFGToSF
   "systematics/AR23Plus/QE-Fix"                      # CCQEXSecCorr_SBN_v3
   "systematics/AR23Plus/ACHILLES_weights.root"       # QEInterference_SBN_v3
+  "systematics/AR23Plus/MEC"                         # MECq0q3InterpWeighting_SBN_v3_SuSAToMar
 )
 
 # Optional: Pierre's GENIE Make.config, used only to cross-check configure flags.

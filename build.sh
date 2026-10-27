@@ -296,7 +296,7 @@ stage_verify() {
     ok "smoke-test input ${input}"
   fi
   env -i HOME="${HOME}" USER="${USER}" PATH=/usr/bin:/bin TERM="${TERM}" \
-      STACK_DIR="${STACK}" WORK_DIR="${WORK}" INPUT="${input}" \
+      STACK_DIR="${STACK}" WORK_DIR="${WORK}" INPUT="${input}" NEV="${SMOKE_EVENTS:-200}" \
       bash --noprofile --norc -c '
     set -e
     source "${STACK_DIR}/setup.sh"
@@ -313,16 +313,17 @@ stage_verify() {
     if [ -n "${INPUT}" ]; then
       SD="${WORK_DIR}/smoke/$(date +%Y%m%d_%H%M%S)"; mkdir -p "${SD}"; cd "${SD}"
       "${STACK}/prepare_card.sh" "${COVERAGE_CARDS}/smoke_test_tier2.xml" "${INPUT}" smoke.xml
-      echo "[verify] running nuissyst (2000 events, 3 throws; typically several minutes, no output until done)"
+      echo "[verify] running nuissyst on smoke_tier2.fcl (${NEV} events, 3 throws, no output until done)"
       echo "[verify]   log: ${SD}/smoke.log"
       echo "[verify]   follow it from another shell with:  tail -f ${SD}/smoke.log | grep -v \"DEBUG CalcWeightZExp\""
       t0=$(date +%s)
-      set +e; nuissyst -c smoke.xml -o smoke.root -n 2000 > smoke.log 2>&1; rc=$?; set -e
-      echo "[verify] nuissyst finished in $(( $(date +%s) - t0 )) s with exit code ${rc}"
+      set +e; nuissyst -c smoke.xml -o smoke.root -n "${NEV}" > smoke.log 2>&1; rc=$?; set -e
+      dt=$(( $(date +%s) - t0 ))
+      echo "[verify] nuissyst finished in ${dt} s with exit code ${rc} (~$(( dt / NEV )).$(( (dt * 10 / NEV) % 10 )) s/event, mostly the first response-caching pass)"
       grep -v "DEBUG CalcWeightZExp" smoke.log | tail -25
       echo "[verify] full log: $(pwd)/smoke.log"
       "${STACK}/check_output.sh" "${rc}" smoke.log smoke.root || fail "smoke test failed"
-      for d in XSecShape_CCMEC_Martini EnergyDependence_CCMEC DecayAngMECVariationResponse; do
+      for d in DecayAngMECVariationResponse; do
         grep -q "Added NuSyst param, ${d} " smoke.log || fail "Tier-2 dial ${d} was not registered"
       done
       echo "[verify] Tier-2 dials registered; smoke test output: $(pwd)/smoke.root"
