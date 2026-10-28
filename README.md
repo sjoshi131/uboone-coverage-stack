@@ -116,11 +116,18 @@ Job `k` writes a non-overlapping block of throws, and only job 0 writes `nominal
 When the jobs finish, merge the outputs inside the container after sourcing `setup.sh`:
 
 ```
-grid/merge_throws.sh /pnfs/dune/scratch/users/$USER/coverage/alldials_<date> \
-    coverage_all_dials_tier2.xml /path/to/ghep_AR23.root
+grid/merge_throws.sh /pnfs/dune/scratch/users/$USER/coverage/alldials_<date> [merged.root]
 ```
 
-The merged file contains `error_bands/`, `nominal_throw/`, `nominal/` and `nominal_band/`.
+The merged file (default `<campaign>/merged.root`) contains `error_bands/`, `nominal_throw/`, `nominal/` and `nominal_band/`.
+
+The merge is done by `grid/fast_merge.py`, which reads only the throw files and takes seconds. It reproduces `nuissyst -f MergeErrors` bit for bit, but it doesn't load the card, the FHiCL or the events. It also warns when a throw number appears in two files (a job resubmitted with the same start) and reports gaps in the throw numbering. To use nuissyst itself, add `--nuissyst` and give the card and input as before:
+
+```
+grid/merge_throws.sh --nuissyst <campaign dir> coverage_all_dials_tier2.xml /path/to/ghep_AR23.root
+```
+
+That is slow with the production FHiCL, because nuissyst sets up every dial and reads the events before it merges.
 
 ## Notes
 
