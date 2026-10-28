@@ -128,6 +128,14 @@ grid/merge_throws.sh --nuissyst <campaign dir> coverage_all_dials_tier2.xml /pat
 
 That is slow with the production FHiCL, because nuissyst sets up every dial and reads the events before it merges.
 
+## 5. Prior-predictive p-value
+
+```
+python3 analysis/throw_pvalue.py merged.root --plot --csv
+```
+
+For each sample in the file, the script computes the throw distribution χ²_k = (m_nom − m_k)ᵀ C⁻¹ (m_nom − m_k) and the data value χ²_obs = (d − m_nom)ᵀ C⁻¹ (d − m_nom). C is the data covariance NUISANCE uses (`nominal/<sample>_COV`), inverted once with an eigenvalue cut (`--rcond`, default 1e-10). The p-value is p = (#{χ²_k ≥ χ²_obs} + 1)/(N + 1). χ²_obs is checked against NUISANCE's own χ² (`nominal/likelihood_hist`), which is valid for single-sample cards. `--plot` writes a PNG and `--csv` writes the χ²_k values.
+
 ## Notes
 
 - **One card per MicroBooNE VisAngle result.** Each card has the same 68 dials and FHiCL and differs only in the `<sample>` line, so a run gives the results for that sample only:
