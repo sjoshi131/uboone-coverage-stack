@@ -7,6 +7,7 @@
 #   $3 nper       throws per job (>= 2)
 #   $4 outdir     /pnfs output directory
 #   $5 tag        name prefix for the output files
+#   $6 maxevents  only the first N input events (0 or absent = all events)
 #
 # Job k (=$PROCESS) writes throws so that the union over jobs is 1..N*nper with
 # no duplicates; only job 0 writes the "nominal" directory that MergeErrors needs.
@@ -14,9 +15,10 @@
 #   k > 0 : -s k*nper+1  error_throws = nper-1   -> throw_(k*nper+1) .. throw_((k+1)*nper)
 
 set -o pipefail
-CARD=$1; INPUT=$2; NPER=$3; OUTDIR=$4; TAG=$5
+CARD=$1; INPUT=$2; NPER=$3; OUTDIR=$4; TAG=$5; MAXEV=${6:-0}
 K=${PROCESS:-0}
-echo "[job] host=$(hostname) process=${K} card=${CARD} input=${INPUT} nper=${NPER} outdir=${OUTDIR}"
+NOPT=(); [ "${MAXEV}" -gt 0 ] 2>/dev/null && NOPT=(-n "${MAXEV}")
+echo "[job] host=$(hostname) process=${K} card=${CARD} input=${INPUT} nper=${NPER} outdir=${OUTDIR} maxevents=${MAXEV}"
 
 STACKDIR=$(ls -d "${INPUT_TAR_DIR_LOCAL}"/*/ | head -1)
 source "${STACKDIR}/setup.sh" || exit 10
@@ -31,7 +33,7 @@ if [ "${K}" -eq 0 ]; then START=0; NT=${NPER}; else START=$(( K*NPER + 1 )); NT=
 OUT="${TAG}_$(printf %04d "${K}").root"
 echo "[job] start=${START} error_throws=${NT} -> ${OUT}.throws.root"
 
-nuissyst -c card.xml -o "${OUT}" -f ThrowErrors -s "${START}" -q "error_throws=${NT}" > nuissyst.log 2>&1
+nuissyst -c card.xml -o "${OUT}" -f ThrowErrors -s "${START}" -q "error_throws=${NT}" "${NOPT[@]}" > nuissyst.log 2>&1
 RC=$?
 tail -30 nuissyst.log
 # Always ship the log (compressed), so failed jobs can be diagnosed from /pnfs

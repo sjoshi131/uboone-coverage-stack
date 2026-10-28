@@ -102,6 +102,15 @@ grid/submit_throws.sh /exp/dune/app/users/$USER/coverage-stack.tar.gz \
     coverage_all_dials_tier2.xml /pnfs/dune/scratch/users/$USER/inputs/ghep_AR23.root 20 20 alldials
 ```
 
+For a quick test, add `-n <events>` before the other arguments. Every job then processes only the first that many events of the input, for example 2 jobs × 3 throws on 200 events:
+
+```
+bash grid/submit_throws.sh -n 200 /exp/dune/app/users/$USER/coverage-stack.tar.gz \
+    cards/smoke_test_tier2.xml /pnfs/dune/scratch/users/$USER/inputs/ghep_AR23.root 2 3 gridtest
+```
+
+Each campaign folder gets a `campaign.txt` that records the tarball md5, card, input, number of jobs, throws per job and event limit.
+
 Job `k` writes a non-overlapping block of throws, and only job 0 writes `nominal`. Twenty jobs of 20 throws each give throws 1–400 exactly once. To use a card that isn't in the tarball, pass its path; it's shipped with the job.
 
 When the jobs finish, merge the outputs inside the container after sourcing `setup.sh`:
