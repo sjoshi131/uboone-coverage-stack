@@ -128,7 +128,7 @@ grid/merge_throws.sh --nuissyst <campaign dir> coverage_all_dials_tier2.xml /pat
 
 That is slow with the production FHiCL, because nuissyst sets up every dial and reads the events before it merges.
 
-## 5. Prior-predictive p-value
+## 5. p-value
 
 ```
 python3 analysis/throw_pvalue.py merged.root --plot --csv
