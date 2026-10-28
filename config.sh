@@ -35,7 +35,7 @@ NUSYST_COMMIT="58bf0b198ec25393efecd555f0a083dcbad66eef"
 # MicroBooNE VisAngle sample + nominal/nominal_band output (merged PR #1)
 NUISANCE_URL="https://github.com/sjoshi131/nuisance-MicroBooNE-VisAngle.git"
 NUISANCE_BRANCH="feature/microboone-visangle"
-NUISANCE_COMMIT="4842d0375632f9d6960ed2570821d33af6a5787c"
+NUISANCE_COMMIT="197a747f1af51812677273423a25cc1ffed33477"
 
 # ---------------------------------------------------------------------------
 # Runtime inputs copied INTO the stack (grid nodes cannot see these paths).
