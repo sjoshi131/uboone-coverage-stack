@@ -1,0 +1,118 @@
+<?xml version="1.0"?>
+<nuisance>
+  <!--
+    Validated-prior card for the MicroBooNE VisAngle study: 68 dials (65 GAUSSIAN, 3 FIX).
+    Fill @INPUT_GHEP@ with prepare_card.sh (done automatically by the grid scripts).
+  -->
+  <DUNERwt ConfigFHiCL="systs_atmospherics_uboone_tier2.fcl" />
+
+  <!-- Sample: cos(theta_mu), 18 bins -->
+  <sample name="MicroBooNE_CC1Mu1p_VisAngle_XSec_1DMuonCosTheta_nu"
+          input="GENIE:@INPUT_GHEP@" />
+
+  <config error_throws="100" />
+
+  <!-- Normalized nuisance coordinates: step=1 corresponds to one sigma. -->
+
+  <!-- Select exactly one CCQETemplateReweight provider in the FHiCL. -->
+  <parameter name="q0bin0"                type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
+  <parameter name="q0bin1"                type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
+  <parameter name="q0bin2"                type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
+  <parameter name="q0bin3"                type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
+  <parameter name="q0bin4"                type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
+
+  <!-- GENIE ReWeight normalized dials. -->
+  <parameter name="AhtBY"                 type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
+  <parameter name="BhtBY"                 type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
+  <parameter name="CV1uBY"                type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
+  <parameter name="CV2uBY"                type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
+  <parameter name="EtaNCEL"               type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
+  <parameter name="FrAbs_N"               type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
+  <parameter name="FrAbs_pi"              type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
+  <parameter name="FrCEx_N"               type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
+  <parameter name="FrCEx_pi"              type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
+  <parameter name="FrInel_N"              type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
+  <parameter name="FrInel_pi"             type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
+  <parameter name="FrPiProd_N"            type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
+  <parameter name="FrPiProd_pi"           type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
+  <parameter name="MFP_N"                 type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
+  <parameter name="MFP_pi"                type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
+  <parameter name="MaNCEL"                type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
+  <parameter name="MaNCRES"               type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
+  <parameter name="MvCCRES"               type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
+  <parameter name="MvNCRES"               type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
+  <parameter name="NonRESBGvbarnCC1pi"    type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
+  <parameter name="NonRESBGvbarnCC2pi"    type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
+  <parameter name="NonRESBGvbarnNC1pi"    type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
+  <parameter name="NonRESBGvbarnNC2pi"    type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
+  <parameter name="NonRESBGvbarpCC1pi"    type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
+  <parameter name="NonRESBGvbarpCC2pi"    type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
+  <parameter name="NonRESBGvbarpNC1pi"    type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
+  <parameter name="NonRESBGvbarpNC2pi"    type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
+  <parameter name="NonRESBGvnCC1pi"       type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
+  <parameter name="NonRESBGvnCC2pi"       type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
+  <parameter name="NonRESBGvnNC1pi"       type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
+  <parameter name="NonRESBGvnNC2pi"       type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
+  <parameter name="NonRESBGvpCC1pi"       type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
+  <parameter name="NonRESBGvpCC2pi"       type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
+  <parameter name="NonRESBGvpNC1pi"       type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
+  <parameter name="NonRESBGvpNC2pi"       type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
+  <parameter name="RDecBR1eta"            type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
+  <parameter name="RDecBR1gamma"          type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
+  <parameter name="FracDelta_CCMEC"       type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
+  <parameter name="FracPN_CCMEC"          type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
+
+  <!-- MECq0q3InterpWeighting_SBN_v3_SuSAToMar (SuSAv2 -> Martini q0-q3 morph). -->
+  <parameter name="MECResponse_q0bin0"     type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
+  <parameter name="MECResponse_q0bin1"     type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
+  <parameter name="MECResponse_q0bin2"     type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
+  <parameter name="MECResponse_q0bin3"     type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
+
+  <parameter name="QuasiDeuteronFraction" type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
+
+  <parameter name="QEIntf_dial_0"          type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
+  <parameter name="QEIntf_dial_1"          type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
+  <parameter name="QEIntf_dial_2"          type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
+  <parameter name="QEIntf_dial_3"          type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
+  <parameter name="QEIntf_dial_4"          type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
+  <parameter name="QEIntf_dial_5"          type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
+
+  <parameter name="MaRes_ResCode0"         type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
+  <parameter name="MaRes_ResCode1"         type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
+  <parameter name="MvRes_ResCode0"         type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
+  <parameter name="MvRes_ResCode1"         type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
+
+  <!--
+    Woods-Saxon parameters are in physical units. The symmetric steps below
+    approximate the asymmetric oneSigmaShifts in the FHiCL:
+      nucleus_radius:      3.53 -> [3.00, 4.00], sigma ~= 0.50
+      surface_thickness:   0.54 -> [0.50, 0.59], sigma ~= 0.045
+    These require bounded/truncated Gaussian throws.
+  -->
+  <parameter name="nucleus_radius"         type="nusyst_parameter" nominal="3.53" low="2.50" high="4.50" step="0.50"  state="GAUSSIAN" />
+  <parameter name="surface_thickness"      type="nusyst_parameter" nominal="0.54" low="0.45" high="0.64" step="0.045" state="GAUSSIAN" />
+
+  <!-- Minerva Z-expansion PCA coordinates: independent, unit variance. -->
+  <parameter name="b1"                     type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
+  <parameter name="b2"                     type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
+  <parameter name="b3"                     type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
+  <parameter name="b4"                     type="nusyst_parameter" nominal="0.0" low="-3.0" high="3.0" step="1.0" state="GAUSSIAN" />
+
+    <!--
+    Tier-2 MEC dials (custom GReWeight build only).
+    XSecShape_CCMEC_{Martini,Empirical} and EnergyDependence_CCMEC are [0,1]
+    morphs: 0 = nominal (AR23 SuSAv2 MEC), 1 = full alternative model.
+  -->
+
+  <!--
+    MEC nucleon-cluster decay angle. The weight is delivered only through
+    DecayAngMECVariationResponse, whose value is a UNIVERSE INDEX (0..24) on the
+    (DecayAngMEC amplitude x DecayAng2MEC frequency) grid in the FHiCL.
+    Index 0 = (amplitude 0, frequency 1) = nominal.
+    DecayAngMEC / DecayAng2MEC are responseless: in NUISANCE they produce no
+    weight on their own and are listed here only for bookkeeping.
+  -->
+  <parameter name="DecayAngMECVariationResponse" type="nusyst_parameter" nominal="0.0" low="0.0"  high="24.0" step="1.0" state="FIX" />
+  <parameter name="DecayAngMEC"                  type="nusyst_parameter" nominal="0.0" low="-1.0" high="1.0"  step="0.5" state="FIX" />
+  <parameter name="DecayAng2MEC"                 type="nusyst_parameter" nominal="1.0" low="0.5"  high="2.0"  step="0.5" state="FIX" />
+</nuisance>

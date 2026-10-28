@@ -131,6 +131,17 @@ That is slow with the production FHiCL, because nuissyst sets up every dial and 
 
 ## Notes
 
+- **One card per MicroBooNE VisAngle result.** Each card has the same 68 dials and FHiCL and differs only in the `<sample>` line, so a run gives the results for that sample only:
+
+  | Result | Production card | Smoke card |
+  | --- | --- | --- |
+  | θ_vis (15 bins) | `coverage_all_dials_tier2.xml` | `smoke_test_tier2.xml` |
+  | cosθ_μ (18 bins) | `coverage_uboone_muoncostheta.xml` | `smoke_uboone_muoncostheta.xml` |
+  | p_miss (9 bins) | `coverage_uboone_pmiss.xml` | `smoke_uboone_pmiss.xml` |
+  | θ_vis in \|p_miss\| slices (27 flattened bins) | `coverage_uboone_thetavis_pmiss.xml` | `smoke_uboone_thetavis_pmiss.xml` |
+
+  The 2D sample needs NUISANCE with the VisAngle 2D commit, so `NUISANCE_COMMIT` must point at it. NUISANCE seeds its throws from the clock, so separate runs get different throws. That doesn't matter for the per-sample coverage. To compare samples throw by throw, use one card holding several `<sample>` lines.
+
 - **FHiCL.** `fcl/systs_atmospherics_uboone_tier2.fcl` is the agreed study configuration. It is derived from Pierre's `systs_atmospherics_v2.fcl` and has one provider for each repeated dial name:
   - `CCQETemplateReweight_SBN_v3_LFGToSF` for `q0bin0..4`
   - `ZExpPCAWeighter_SBN_v3_MvA` (MINERvA) for `b1..b4`
