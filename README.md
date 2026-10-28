@@ -75,7 +75,7 @@ The `genie` stage copies the feature flags from Pierre's GENIE `Make.config` whe
 ## 2. Use it interactively
 
 ```
-$APPT shell -B /cvmfs,/exp,/nashome --ipc --pid $IMG
+$APPT shell -B /cvmfs,/exp,/pnfs,/nashome --ipc --pid $IMG
 source /exp/dune/app/users/$USER/coverage-stack/setup.sh
 $STACK/prepare_card.sh $COVERAGE_CARDS/coverage_all_dials_tier2.xml /path/to/ghep_AR23.root card.xml
 nuissyst -c card.xml -o coverage.root
