@@ -41,7 +41,6 @@ $STACK = /exp/dune/app/users/$USER/coverage-stack
   ```
 
 - **Disk space.** You need roughly 10 GB in `/exp/dune/app/users/$USER` for the stack and build area.
-- **Read access to Pierre's `sbndata`.** The path is `SBNDATA_SRC` in `config.sh`. It's only read once, during the build.
 
 ## 1. Build (about 1–2 h, mostly GENIE)
 
