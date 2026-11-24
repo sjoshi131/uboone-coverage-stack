@@ -48,7 +48,7 @@ EXTRA=()
 if [ -f "${CARD}" ]; then EXTRA+=(-f "dropbox://$(readlink -f "${CARD}")"); CARD=$(basename "${CARD}"); fi
 
 jobsub_submit -G dune -N "${NJOBS}" \
-  --memory=10GB --disk=10GB --expected-lifetime=10h \
+  --memory=12GB --disk=12GB --expected-lifetime=12h \
   --resource-provides=usage_model=DEDICATED,OPPORTUNISTIC \
   --singularity-image /cvmfs/singularity.opensciencegrid.org/fermilab/fnal-wn-sl7:latest \
   --tar_file_name "dropbox://${TARBALL}" \
